@@ -67,11 +67,14 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         server_path = sys.argv[1]
+        answer = input(f"Detected IP: {local_ip}. Use this IP? [Y/n] ").strip().lower()
+        if answer == "n" or answer == "no":
+            local_ip = input("Enter the IP to use: ").strip()
         config_file = write_config(server_path, local_ip, PORT)
-        print("=========================================")
+        print("\n=========================================")
         print("  serverphysics listener")
         print(f"  Listening on port {PORT}")
-        print(f"  Your IP: {local_ip}")
+        print(f"  Target IP: {local_ip}")
         print(f"  Config written to: {config_file}")
         print("  Restart your Minecraft server to apply")
         print("=========================================\n")
