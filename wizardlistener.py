@@ -36,7 +36,7 @@ def open_firewall_port(port):
 
     # Check for firewalld
     if subprocess.run(["which", "firewall-cmd"], capture_output=True).returncode == 0:
-        subprocess.run(["sudo", "firewall-cmd", "--add-port=f"{port}/tcp"", "--permanent"], capture_output=True)
+        subprocess.run(["sudo", "firewall-cmd", "--add-port=" + str(port) + "/tcp", "--permanent"], capture_output=True)
         subprocess.run(["sudo", "firewall-cmd", "--reload"], capture_output=True)
         print(f"[+] Opened port {port}/tcp via firewalld")
         return True
