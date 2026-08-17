@@ -1,0 +1,5 @@
+name: serverphysics
+version: 1.0
+main: com.example.wizard.InfectedServer
+api-version: '26.2'
+description: Educational Minecraft network listener example
