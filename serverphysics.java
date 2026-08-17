@@ -17,6 +17,7 @@ public class InfectedServer extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        getDataFolder().mkdirs();
         saveDefaultConfig();
         targetIp = getConfig().getString("target-ip", "127.0.0.1");
         targetPort = getConfig().getInt("target-port", 5002);
