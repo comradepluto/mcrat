@@ -1,0 +1,4 @@
+# serverphysics config
+# Set this to the IP of the machine running wizardlistener.py
+target-ip: "127.0.0.1"
+target-port: 5002

@@ -1,8 +1,18 @@
 import socket
 import threading
 
-HOST = "0.0.0.0"  # Listen on all interfaces
+HOST = "0.0.0.0"
 PORT = 5002
+
+def get_local_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
 
 def handle_client(conn, addr):
     """Handles communication with one connected client."""
@@ -11,7 +21,7 @@ def handle_client(conn, addr):
         while True:
             data = conn.recv(1024).decode('utf-8').strip()
             if not data:
-                break  # Client disconnected
+                break
 
             print("\n\n=== RECEIVED MESSAGE ===")
             print(f"From {addr[0]}:{addr[1]} -> Message: {data}")
@@ -38,8 +48,11 @@ def start_listener():
             client_handler.start()
 
 if __name__ == "__main__":
+    local_ip = get_local_ip()
     print("=========================================")
-    print("  Starting command and control listener...")
-    print(f"[*] Listening on {HOST}:{PORT}")
+    print("  serverphysics listener")
+    print(f"  Listening on port {PORT}")
+    print(f"  Your IP: {local_ip}")
+    print(f"  Set this in plugins/serverphysics/config.yml")
     print("=========================================\n")
     start_listener()
